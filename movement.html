@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+        <script type="text/javascript" src="TestSite/javascript/jquery-1.8.2.min.js"></script>
+    </head>
+    <body>
+        <script type="text/javascript">
+            $(function () {
+                $(document).on('mousedown', '#icon', function (event) {
+                    event.preventDefault();
+                    $(document).on('mousemove', { item: $(this) }, onMouseMove);
+                    $(document).on('mouseup', onMouseUp);
+                });
+            });
+            
+            function onMouseMove(event) {
+                var $item = $(event.data.item);
+                //console.log($item);
+                $item.css('top', event.pageY);
+                $item.css('left', event.pageX);
+            }
+            function onMouseUp() {
+                $(document).off('mousemove', onMouseMove);
+                $(document).off('mouseup', onMouseUp);
+            }
+        </script>
+        <img id="icon" src="TestSite/assets/nav-fad-icon.png" style="position:absolute;width:100px;height:100px;left: 100px; top:  100px;" />
+    </body>
+</html>
