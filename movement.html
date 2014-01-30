@@ -4,22 +4,29 @@
         <meta charset="utf-8" />
         <title></title>
         <script type="text/javascript" src="/TestSite/javascript/jquery-1.8.2.min.js"></script>
+        <!--<script type="text/javascript" src="/TestSite/javascript/iscroll.js"></script>-->
     </head>
     <body>
         <script type="text/javascript">
             $(function () {
-                $(document).on('mousedown', '#icon', function (event) {
+                $(document).on('touchstart', '#icon', function (event) {
                     event.preventDefault();
-                    $(document).on('mousemove', { item: $(this) }, onMouseMove);
-                    $(document).on('mouseup', onMouseUp);
+
+                    $(document).on('touchmove', { item: $(this) }, onMouseMove);
+                    $(document).on('touchleave', onMouseUp);
                 });
             });
-            
+
             function onMouseMove(event) {
+                event.preventDefault();
                 var $item = $(event.data.item);
+                var touches = event.changedTouches;
+                if (touches.length > 0) {
+                    var firstTouch = touches[0];
+                    $item.css('top', firstTouch.pageY);
+                    $item.css('left', firstTouch.pageX);
+                }
                 //console.log($item);
-                $item.css('top', event.pageY);
-                $item.css('left', event.pageX);
             }
             function onMouseUp() {
                 $(document).off('mousemove', onMouseMove);
