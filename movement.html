@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8" />
         <title></title>
-        <script type="text/javascript" src="/TestSite/javascript/jquery-1.8.2.min.js"></script>
+        <script type="text/javascript" src="/TestSite/javascript/jquery-1.11.0.min.js"></script>
         <!--<script type="text/javascript" src="/TestSite/javascript/iscroll.js"></script>-->
     </head>
     <body>
@@ -11,26 +11,31 @@
             $(function () {
                 $(document).on('touchstart', '#icon', function (event) {
                     event.preventDefault();
-
-                    $(document).on('touchmove', { item: $(this) }, onMouseMove);
-                    $(document).on('touchleave', onMouseUp);
+                    console.log('touch started');
+                    $(document).on('touchmove', { item: $(this) }, onTouchMove);
+                    $(document).on('touchend', onTouchEnd);
                 });
+
             });
 
-            function onMouseMove(event) {
+            function onTouchMove(event) {
                 event.preventDefault();
-                var $item = $(event.data.item);
-                var touches = event.changedTouches;
-                if (touches.length > 0) {
-                    var firstTouch = touches[0];
-                    $item.css('top', firstTouch.pageY);
-                    $item.css('left', firstTouch.pageX);
-                }
-                //console.log($item);
+                var $item = event.data.item;
+                console.log($item);
+                var touches = event.originalEvent.changedTouches;
+                var firstTouch = touches[0];
+                console.log(firstTouch.pageX + ',' + firstTouch.pageY);
+                $item.css('top', firstTouch.pageY + 50);
+                $item.css('left', firstTouch.pageX + 50);
+                //console.log($item.css('top') + ',' + $item.css('left'));
             }
-            function onMouseUp() {
-                $(document).off('mousemove', onMouseMove);
-                $(document).off('mouseup', onMouseUp);
+            function onTouchCancel(event) {
+                console.log('touch cancelled');
+            }
+            function onTouchEnd(event) {
+                console.log('touch ended');
+                $(document).off('touchmove', onTouchMove);
+                $(document).off('touchend', onTouchEnd);
             }
         </script>
         <img id="icon" src="/TestSite/assets/nav-fad-icon.png" style="position:absolute;width:100px;height:100px;left: 100px; top:  100px;" />
