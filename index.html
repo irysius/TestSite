@@ -3,21 +3,105 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title></title>
-        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-        <script src="/TestSite/javascript/jquery-1.8.2.min.js"></script> 
-        <script src="/TestSite/javascript/jquery-ui-1.8.20.js"></script>
-        <script src="/TestSite/javascript/javascript.js"></script>
+        <title>Easel JS</title>
+        <script src="/js/jquery-1.10.2.min.js"></script>
+        <script src="/js/createjs-2013.09.25.min.js"></script>
     </head>
     <body>
-        <h1>PDF link test</h1>
-        <h2>Vanilla Test</h2>
-        <a href="/TestSite/assets/test.pdf">PDF Link</a>
-        <h2>Blank Test</h2>
-        <a href="/TestSite/assets/test.pdf" target="_blank">PDF Link</a>
-        <h2>Tab Test</h2>
-        <a href="/TestSite/assets/test.pdf" target="_tab">PDF Link</a>
-        <br />
-        <input type="text" id="textbox" placeholder="placeholder text"/>
+        <canvas id="main-canvas"></canvas>
+        <script>
+            var canvas, stage;
+            var background;
+            var img_idle, img_spawning;
+            var preload;
+            var anim_idle, anim_spawning;
+
+            $(function () {
+                canvas = document.getElementById('main-canvas');
+                canvas.width = 640;
+                canvas.height = 480;
+                stage = new createjs.Stage(canvas);
+
+                //background = new createjs.Shape();
+                //background.graphics.beginFill('#6495ED').drawRect(0, 0, 640, 480);
+                //stage.addChild(background);
+
+                //img_idle = new createjs.Bitmap('/img/airdrone_idle.png');
+                //img_spawning = new createjs.Bitmap('/img/airdrone_spawning.png');
+
+                //stage.addChild(img_idle);
+                //stage.addChild(img_spawning);
+
+                //var idle_data = {
+                //    images: ['/img/airdrone_idle.png'],
+                //    frames: { width: 148 / 2, height: 98 / 2 },
+                //    animations: { idle: [0, 3] }
+                //};
+                //var idle_spawning = {
+                //    images: ['/img/airdrone_spawning.png'],
+                //    frames: { width: 187 / 3, height: 259 / 3 },
+                //    animations: { spawn: [0, 8, '', 0.75] }
+                //};
+                //var ss_idle = new createjs.SpriteSheet(idle_data);
+                //var ss_spawning = new createjs.SpriteSheet(idle_spawning);
+                //anim_idle = new createjs.Sprite(ss_idle, 'idle');
+                //anim_spawning = new createjs.Sprite(ss_spawning, 'spawn');
+                //stage.addChild(anim_idle);
+                //stage.addChild(anim_spawning);
+                
+                var manifest = [
+                    { id: 'idle', src: '/img/airdrone_idle.png' },
+                    { id: 'spawning', src: '/img/airdrone_spawning.png' }
+                ];
+                preload = new createjs.LoadQueue();
+                preload.addEventListener('complete', prepareAssets);
+                preload.loadManifest(manifest);
+
+                createjs.Ticker.setFPS(30);
+                createjs.Ticker.addEventListener('tick', tick);
+            })
+
+            function tick() {
+                update();
+                draw();
+            }
+            function update() {
+
+            }
+            function draw() {
+                stage.update();
+            }
+            function prepareAssets() {
+                var idle = preload.getResult('idle');
+                var spawning = preload.getResult('spawning');
+
+                //img_idle = new createjs.Bitmap(idle);
+                //img_spawning = new createjs.Bitmap(spawning);
+
+                //stage.addChild(img_idle);
+                //stage.addChild(img_spawning);
+
+                var idle_data = {
+                    images: [idle],
+                    frames: { width: 148 / 2, height: 98 / 2 },
+                    animations: { idle: [0, 3] }
+                };
+                var idle_spawning = {
+                    images: [spawning],
+                    frames: { width: 187 / 3, height: 259 / 3 },
+                    animations: { spawn: [0, 8, '', 0.75] }
+                };
+                var ss_idle = new createjs.SpriteSheet(idle_data);
+                var ss_spawning = new createjs.SpriteSheet(idle_spawning);
+                anim_idle = new createjs.Sprite(ss_idle, 'idle');
+                anim_spawning = new createjs.Sprite(ss_spawning, 'spawn');
+                stage.addChild(anim_idle);
+                //stage.addChild(anim_spawning);
+
+                createjs.Tween.get(anim_idle, { loop: true })
+                    .to({ y: 200 }, 1000, createjs.Ease.getPowInOut(2.2))
+                    .to({ y: 0 }, 1000, createjs.Ease.getPowInOut(2.2));
+            }
+        </script>
     </body>
 </html>
